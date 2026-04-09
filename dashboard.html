@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falcon Shield - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: rgba(18, 25, 45, 0.75);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            background: #0f1422e6;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #2a3456;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #e6e9ff, #9aa8d9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            background: #1e2a3e;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: #ccddf8;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #8b3c4a;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #a44e5e;
+        }
+
+        .nav-bar {
+            background: #0a1022e0;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid #2a3456;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #9aaed0;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            color: #e2e9ff;
+            background: #1a1f36;
+        }
+
+        .nav-btn.active {
+            color: #6c8fe0;
+            border-bottom-color: #6c8fe0;
+        }
+
+        .page-content {
+            padding: 28px 2rem 2rem 2rem;
+            display: none;
+        }
+
+        .page-content.active-page {
+            display: block;
+        }
+
+        .search-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 2;
+            display: flex;
+            gap: 8px;
+            background: #0a0f1c;
+            border-radius: 48px;
+            padding: 4px 8px 4px 20px;
+            border: 1px solid #2e3b57;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 0;
+            color: white;
+            outline: none;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: #0c1122cc;
+            border-radius: 1.6rem;
+            padding: 1.2rem;
+            border: 1px solid #283253;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #eef3ff;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 14px 10px;
+            border-bottom: 1px solid #263153;
+            vertical-align: middle;
+        }
+
+        th {
+            color: #b9c8ff;
+            font-weight: 600;
+            background: #0b1022;
+        }
+
+        .criminal-photo-sm {
+            width: 45px;
+            height: 45px;
+            background: #1f2b48;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button.view-btn,
+        button.edit-btn,
+        button.delete-btn {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+        }
+
+        .view-btn {
+            background: #3a5785;
+        }
+
+        .edit-btn {
+            background: #4a6a2e;
+        }
+
+        .delete-btn {
+            background: #792e3e;
+        }
+
+        .form-card {
+            background: #101826cc;
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            border: 1px solid #2a3555;
+        }
+
+        .form-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #cbd5ff;
+            border-left: 4px solid #5a7bc2;
+            padding-left: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-field label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #95a5cf;
+        }
+
+        .input-field input,
+        .input-field textarea {
+            background: #070c1a;
+            border: 1px solid #2e3c60;
+            padding: 12px 14px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-field input:focus,
+        .input-field textarea:focus {
+            border-color: #5f7ec9;
+        }
+
+        .photo-upload-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .photo-preview {
+            width: 60px;
+            height: 60px;
+            background: #1f2a46;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        button.primary {
+            background: #3b5b8c;
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button.warning {
+            background: #7a6a2e;
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button.secondary {
+            background: #2a3d5e;
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2d6a4f;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            color: #56658b;
+            font-size: 0.7rem;
+            border-top: 1px solid #2a3456;
+        }
+
+        @media (max-width: 768px) {
+            .page-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="logo">
+                <h1>⚡ FALCON SHIELD</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-badge" id="userNameDisplay">👮 Officer</div>
+                <button class="logout-btn" id="logoutBtn">🚪 LOGOUT</button>
+            </div>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn active" data-page="registry">📋 CRIMINAL REGISTRY</button>
+            <button class="nav-btn" data-page="add">➕ ADD NEW RECORD</button>
+        </div>
+
+        <div id="registryPage" class="page-content active-page">
+            <div class="search-toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 Search by criminal name...">
+                    <button id="searchBtn"
+                        style="background:#3b5b8c; border-radius:40px; padding:8px 20px; border:none; color:white; cursor:pointer;">SEARCH</button>
+                    <button id="resetSearchBtn"
+                        style="background:#7a6a2e; border-radius:40px; padding:8px 20px; border:none; color:white; cursor:pointer;">RESET</button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="criminalTable">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Crime</th>
+                            <th>Location</th>
+                            <th>Date of Crime</th>
+                            <th>Case ID</th>
+                            <th>Term</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding:40px;">Loading records...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="addPage" class="page-content">
+            <div class="form-card">
+                <div class="form-title">📝 REGISTER / EDIT CRIMINAL</div>
+                <div class="grid-2col">
+                    <div class="input-field">
+                        <label>PHOTO (Upload Image)</label>
+                        <div class="photo-upload-area">
+                            <input type="file" id="photoFile" accept="image/*" style="display:none;">
+                            <button type="button" id="uploadPhotoBtn" class="secondary">📷 Choose Image</button>
+                            <div id="photoPreview" class="photo-preview">📸</div>
+                        </div>
+                    </div>
+                    <div class="input-field"><label>FULL NAME *</label><input type="text" id="nameInput"
+                            placeholder="Criminal full name"></div>
+                    <div class="input-field"><label>EMAIL</label><input type="email" id="emailInput"
+                            placeholder="criminal@example.com"></div>
+                    <div class="input-field"><label>LOCATION</label><input type="text" id="locationInput"
+                            placeholder="City, State"></div>
+                    <div class="input-field"><label>CRIME TYPE</label><input type="text" id="crimeInput"
+                            placeholder="e.g., Homicide, Fraud"></div>
+                    <div class="input-field"><label>DATE OF CRIME</label><input type="date" id="dateInput"></div>
+                    <div class="input-field"><label>ONGOING CASE</label><input type="text" id="caseInput"
+                            placeholder="Case #ID"></div>
+                    <div class="input-field"><label>PRISONMENT TERM</label><input type="text" id="termInput"
+                            placeholder="e.g., 15 years"></div>
+                    <div class="input-field full-width"><label>OTHER INFO</label><textarea id="otherInput" rows="3"
+                            placeholder="Alias, accomplices, gang affiliation..."></textarea></div>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" id="addUpdateBtn" class="primary">➕ ADD RECORD</button>
+                    <button type="button" id="cancelEditBtn" class="warning" style="display: none;">✖ CANCEL
+                        EDIT</button>
+                    <button type="button" id="clearFormBtn" class="secondary">🗑️ Clear</button>
+                </div>
+                <input type="hidden" id="editId" value="">
+            </div>
+        </div>
+        <footer>🔒 Classified LEADS System | Authorized Personnel Only</footer>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
